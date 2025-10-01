@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import FormLabel from "./FormLabel";
 
 interface CheckboxItem {
@@ -60,29 +60,28 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   };
 
   // Validate that all checked items have values
-  const validateInputs = () => {
-    const checkedItems = Object.keys(checked).filter(id => checked[id]);
-    const hasValidInputs = checkedItems.every(id => {
-      const value = inputValues[id] || '';
+  const validateInputs = useCallback(() => {
+    const checkedItems = Object.keys(checked).filter((id) => checked[id]);
+    const hasValidInputs = checkedItems.every((id) => {
+      const value = inputValues[id] || "";
       return value.trim().length > 0;
     });
-    
-    // Call parent validation callback
+
     onValidationChange?.(hasValidInputs);
     return hasValidInputs;
-  };
+  }, [checked, inputValues, onValidationChange]);
 
   // Update checked state when items change
   useEffect(() => {
     if (items.length > 0 && Object.keys(checked).length === 0) {
       setChecked({ [items[0].id]: true });
     }
-  }, [items]);
+  }, [items, checked]);
 
   // Validate on input changes
   useEffect(() => {
     validateInputs();
-  }, [inputValues, checked]);
+  }, [inputValues, checked, validateInputs]);
 
   return (
     <div className="flex flex-col gap-2.5 md:gap-3.5 xl:gap-4 md:col-span-2">

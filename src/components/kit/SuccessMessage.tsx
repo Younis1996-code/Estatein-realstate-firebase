@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface SuccessMessageProps {
   isVisible: boolean;
@@ -18,19 +18,27 @@ const SuccessMessage: React.FC<SuccessMessageProps> = ({
   autoCloseDelay = 5000,
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
+  const closeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isVisible) {
       setIsAnimating(true);
 
       if (autoClose) {
-        const timer = setTimeout(() => {
+        closeTimeout.current = setTimeout(() => {
           handleClose();
         }, autoCloseDelay);
-
-        return () => clearTimeout(timer);
       }
+    } else {
+      setIsAnimating(false);
     }
+
+    return () => {
+      if (closeTimeout.current) {
+        clearTimeout(closeTimeout.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, autoClose, autoCloseDelay]);
 
   const handleClose = () => {

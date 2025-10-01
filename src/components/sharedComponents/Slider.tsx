@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import NextArrow from "../../svg/Next";
 import Previous from "../../svg/previous";
 import Button from "./Button";
@@ -31,21 +31,21 @@ export default function Slider({
   const totalPages = Math.ceil(cards.length / cardsPerView);
   const currentPage = Math.floor(currentIndex / cardsPerView) + 1;
 
-  const updateCardsPerView = () => {
-    setCardsPerView(
-      window.innerWidth <= 768
-        ? num_Of_Cards_in_sm_screen
-        : window.innerWidth <= 1024
-        ? num_Of_Cards_in_md_screen
-        : num_Of_Cards_in_xl_screen
-    );
-  };
+  const updateCardsPerView = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      setCardsPerView(num_Of_Cards_in_sm_screen);
+    } else if (window.innerWidth <= 1024) {
+      setCardsPerView(num_Of_Cards_in_md_screen);
+    } else {
+      setCardsPerView(num_Of_Cards_in_xl_screen);
+    }
+  }, [num_Of_Cards_in_sm_screen, num_Of_Cards_in_md_screen, num_Of_Cards_in_xl_screen]);
 
   useEffect(() => {
     updateCardsPerView();
     window.addEventListener("resize", updateCardsPerView);
     return () => window.removeEventListener("resize", updateCardsPerView);
-  }, []);
+  }, [updateCardsPerView]);
 
   const nextSlide = () => {
     if (!isAtEnd) {
