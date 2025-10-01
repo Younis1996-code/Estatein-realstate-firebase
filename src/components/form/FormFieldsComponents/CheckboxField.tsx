@@ -91,7 +91,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
       <div className="flex flex-col md:flex-row gap-4">
         {items.map((item) => (
           <div key={item.id} className="relative w-full">
-            <div className="w-4 h-4 xl:w-6 xl:h-6 text-White absolute top-1/2 -translate-y-1/2 left-5 xl:left-6 flex items-center justify-center">
+            <div className="w-4 h-4 xl:w-6 xl:h-6 text-White absolute top-1/2 -translate-y-1/2 left-5 xl:left-6 flex items-center justify-center pointer-events-none">
               {item.icon}
             </div>
             <input
